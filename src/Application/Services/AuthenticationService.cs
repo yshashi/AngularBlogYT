@@ -6,9 +6,29 @@ namespace Application;
 public class AuthenticationService(IUnitOfWork unitOfWork, IUserRepository userRepository) : IAuthenticationService
 {
 
-    public Task<Result> LoginAsync(LoginRequest loginRequest)
+    public async Task<Result> LoginAsync(LoginRequest loginRequest)
     {
-        throw new NotImplementedException();
+        if (loginRequest is null)
+        {
+            return Result.Failure(AuthError.InvalidLoginRequest);
+        }
+
+        var (email, password) = loginRequest;
+        var user = await userRepository.GetUserByEmailAsync(email);
+        if(user is null)
+        {
+            return Result.Failure(AuthError.UserNotFound);
+        }
+        if(user.Password != password)
+        {
+            return Result.Failure(AuthError.InValidPassword);
+        }
+        var token = "token"; // will be replaced later
+        var result = new {
+            Token = token,
+            Username = user.Username
+        };
+        return Result.Success(result);
     }
 
     public async Task<Result> RegisterAsync(RegisterRequest registerRequest)
