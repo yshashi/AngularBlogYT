@@ -1,37 +1,24 @@
 using System.Text;
+using API;
 using Infrastructure;
-using Application;
 using Application.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
 builder.Services.AddControllers();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
 
+builder.Services.AddWebServices(builder.Configuration);
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new()
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey
-                (Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
-            ClockSkew = TimeSpan.Zero
-        };
-    });
 
 var app = builder.Build();
 
@@ -48,7 +35,20 @@ app.MapControllers();
 
 app.Run();
 
-public record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+public class LowerCaseDocumentFilter : IDocumentFilter
 {
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
+    {
+        // get the paths
+        var paths = swaggerDoc.Paths.ToDictionary(
+            path => path.Key.ToLowerInvariant(),
+            path => swaggerDoc.Paths[path.Key]);
+
+        // add the paths in swagger
+        swaggerDoc.Paths = new OpenApiPaths();
+        foreach (var pathItem in paths)
+        {
+            swaggerDoc.Paths.Add(pathItem.Key, pathItem.Value);
+        }
+    }
 }
