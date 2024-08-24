@@ -10,4 +10,7 @@ public static class AuthError
     public static Error UserNotFound => new(ErrorTypeConstant.NotFound, "User not found");
 
     public static Error InValidPassword => new(ErrorTypeConstant.ValidationError, "Invalid password");
+    
+    public static Error CreateInvalidLoginRequestError(IEnumerable<string> errors) =>
+        new(ErrorTypeConstant.ValidationError, string.Join(";", errors));
 }

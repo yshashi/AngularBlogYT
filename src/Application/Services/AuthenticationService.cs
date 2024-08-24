@@ -1,14 +1,19 @@
 ﻿
+using Application.Validators;
 using Domain;
 
 namespace Application;
 
-public class AuthenticationService(IUnitOfWork unitOfWork, IUserRepository userRepository) : IAuthenticationService
+public class AuthenticationService(IUnitOfWork unitOfWork,
+    IUserRepository userRepository,
+    LoginRequestValidator loginRequestValidator,
+    RegisterRequestValidator registerRequestValidator) : IAuthenticationService
 {
 
     public async Task<Result> LoginAsync(LoginRequest loginRequest)
     {
-        if (loginRequest is null)
+        var validationResult = await loginRequestValidator.ValidateAsync(loginRequest);
+        if (!validationResult.IsValid)
         {
             return Result.Failure(AuthError.InvalidLoginRequest);
         }
@@ -33,7 +38,8 @@ public class AuthenticationService(IUnitOfWork unitOfWork, IUserRepository userR
 
     public async Task<Result> RegisterAsync(RegisterRequest registerRequest)
     {
-        if (registerRequest == null)
+        var validationResult = await registerRequestValidator.ValidateAsync(registerRequest);
+        if (!validationResult.IsValid)
         {
             return Result.Failure(AuthError.InvalidRegisterRequest);
         }

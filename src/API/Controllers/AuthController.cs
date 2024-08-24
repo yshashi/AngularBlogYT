@@ -10,10 +10,7 @@ public class AuthController(IAuthenticationService authenticationService) : Base
     {
         
         var response = await authenticationService.RegisterAsync(registerRequest);
-        if(response.IsFailure) {
-            return Results.BadRequest(response);
-        }
-        return Results.Ok(response);
+        return response.ToHttpResponse();
     }
 
     [HttpPost("login")]
@@ -21,9 +18,6 @@ public class AuthController(IAuthenticationService authenticationService) : Base
     {
         
         var response = await authenticationService.LoginAsync(loginRequest);
-        if(response.IsFailure) {
-            return Results.BadRequest(response);
-        }
-        return Results.Ok(response);
+        return response.ToHttpResponse();
     }
 }
