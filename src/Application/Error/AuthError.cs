@@ -11,6 +11,7 @@ public static class AuthError
 
     public static Error InValidPassword => new(ErrorTypeConstant.ValidationError, "Invalid password");
     
-    public static Error CreateInvalidLoginRequestError(IEnumerable<string> errors) =>
-        new(ErrorTypeConstant.ValidationError, string.Join(";", errors));
+    public static Error CreateInvalidLoginRequestError(IEnumerable<string> errors) => 
+        new(ErrorTypeConstant.ValidationError, string.Join(", ", errors));
+    
 }

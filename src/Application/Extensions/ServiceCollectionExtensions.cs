@@ -1,7 +1,9 @@
-﻿using FluentValidation;
+﻿using Application.Interface;
+using Application.Services;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Application;
+namespace Application.Extensions;
 
 public static class ServiceCollectionExtensions
 {
@@ -9,6 +11,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddValidatorsFromAssembly(typeof(ServiceCollectionExtensions).Assembly);
         services.AddScoped<IAuthenticationService, AuthenticationService>();
+        services.AddScoped<IJwtService, JwtService>();
 
         return services;
     }

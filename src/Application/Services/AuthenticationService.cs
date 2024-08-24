@@ -1,4 +1,5 @@
 ﻿
+using Application.Interface;
 using Application.Validators;
 using Domain;
 
@@ -7,7 +8,8 @@ namespace Application;
 public class AuthenticationService(IUnitOfWork unitOfWork,
     IUserRepository userRepository,
     LoginRequestValidator loginRequestValidator,
-    RegisterRequestValidator registerRequestValidator) : IAuthenticationService
+    RegisterRequestValidator registerRequestValidator,
+    IJwtService jwtService) : IAuthenticationService
 {
 
     public async Task<Result> LoginAsync(LoginRequest loginRequest)
@@ -15,7 +17,8 @@ public class AuthenticationService(IUnitOfWork unitOfWork,
         var validationResult = await loginRequestValidator.ValidateAsync(loginRequest);
         if (!validationResult.IsValid)
         {
-            return Result.Failure(AuthError.InvalidLoginRequest);
+            var errors = validationResult.Errors.Select(a => a.ErrorMessage);
+            return Result.Failure(AuthError.CreateInvalidLoginRequestError(errors));
         }
 
         var (email, password) = loginRequest;
@@ -28,7 +31,8 @@ public class AuthenticationService(IUnitOfWork unitOfWork,
         {
             return Result.Failure(AuthError.InValidPassword);
         }
-        var token = "token"; // will be replaced later
+
+        var token = await jwtService.GenerateTokenAsync(user);
         var result = new {
             Token = token,
             Username = user.Username

@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API;
 
 public class UserController : BaseApiController
 {
+    [Authorize]
     [HttpGet]
     public string[] GetUsers()
     {
