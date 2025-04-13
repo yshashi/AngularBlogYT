@@ -1,8 +1,8 @@
-﻿using Domain;
+﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure;
+namespace Infrastructure.Persistence.Configuration;
 
 public class RoleConfiguration : IEntityTypeConfiguration<Role>
 {

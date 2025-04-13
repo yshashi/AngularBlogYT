@@ -1,7 +1,8 @@
-﻿using Domain;
+﻿using Domain.Interface;
+using Infrastructure.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure;
+namespace Infrastructure.Persistence.Repositories;
 
 public class GenericRepository<TEntity>(BlogDbContext context) : IGenericRepository<TEntity> where TEntity : class
 {
@@ -17,7 +18,7 @@ public class GenericRepository<TEntity>(BlogDbContext context) : IGenericReposit
         DbSet.Remove(entity);
     }
 
-    public async Task<List<TEntity>> GetAllAsync()
+    public async Task<IReadOnlyList<TEntity>> GetAllAsync()
     {
         return await DbSet.ToListAsync();
     }

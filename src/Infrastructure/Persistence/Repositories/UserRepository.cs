@@ -1,7 +1,9 @@
-﻿using Domain;
+﻿using Domain.Entities;
+using Domain.Interface;
+using Infrastructure.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure;
+namespace Infrastructure.Persistence.Repositories;
 
 public class UserRepository(BlogDbContext blogDbContext) : GenericRepository<User>(blogDbContext), IUserRepository
 {

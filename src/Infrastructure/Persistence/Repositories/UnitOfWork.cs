@@ -1,6 +1,7 @@
-﻿using Domain;
+﻿using Domain.Interface;
+using Infrastructure.Persistence.Context;
 
-namespace Infrastructure;
+namespace Infrastructure.Persistence.Repositories;
 
 public class UnitOfWork(BlogDbContext context) : IUnitOfWork
 {

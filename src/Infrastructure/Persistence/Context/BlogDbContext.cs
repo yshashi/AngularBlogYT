@@ -1,7 +1,7 @@
-﻿using Domain;
+﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure;
+namespace Infrastructure.Persistence.Context;
 
 public class BlogDbContext(DbContextOptions<BlogDbContext> options) : DbContext(options)
 {
